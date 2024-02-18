@@ -1,0 +1,14 @@
+name: EterniaKamui
+version: '${version}'
+main: br.com.eterniaserver.eterniakamui.EterniaKamui
+dev-url: https://github.com/EterniaServer/EterniaKamui
+api-version: 1.20
+depend:
+  - EterniaLib
+  - EterniaServer
+  - GriefPrevention
+softdepend:
+  - Pl3xMap
+author: Yuri Nogueira
+description: Um plugin eterno
+website: www.eterniaserver.com.br
