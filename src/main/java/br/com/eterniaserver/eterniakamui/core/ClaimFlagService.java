@@ -19,6 +19,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.util.HashMap;
 import java.util.List;
@@ -32,6 +33,7 @@ public class ClaimFlagService {
 
     private final Map<Integer, ItemStack> GUI_ITEMS_ENABLE = new HashMap<>();
     private final Map<Integer, ItemStack> GUI_ITEMS_DISABLE = new HashMap<>();
+    private final Map<Integer, BukkitTask> GUI_TASKS = new HashMap<>();
 
     private final ItemStack[] BASE_GUI = new ItemStack[9];
 
@@ -40,6 +42,19 @@ public class ClaimFlagService {
 
     public ClaimFlagService(EterniaKamui plugin) {
         this.plugin = plugin;
+    }
+
+    public void updateClaimFlag(ClaimFlag claimFlag) {
+        BukkitTask task = GUI_TASKS.get(claimFlag.getId());
+
+        if (task != null && !plugin.getServer().getScheduler().isCurrentlyRunning(task.getTaskId())) {
+            task.cancel();
+        }
+
+        task = plugin.getServer().getScheduler().runTaskLaterAsynchronously(plugin, () -> {
+            EterniaLib.getDatabase().update(ClaimFlag.class, claimFlag);
+        }, 200L);
+        GUI_TASKS.put(claimFlag.getId(), task);
     }
 
     public Optional<Claim> getClaimAt(Location location) {

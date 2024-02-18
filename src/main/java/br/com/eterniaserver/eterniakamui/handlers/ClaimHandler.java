@@ -184,9 +184,7 @@ public class ClaimHandler implements Listener {
         );
 
         claimFlag.setFlag(slotInt, !flagValue);
-        plugin.getServer().getScheduler().runTaskAsynchronously(
-                plugin, () -> EterniaLib.getDatabase().update(ClaimFlag.class, claimFlag)
-        );
+        claimFlagService.updateClaimFlag(claimFlag);
     }
 
 
