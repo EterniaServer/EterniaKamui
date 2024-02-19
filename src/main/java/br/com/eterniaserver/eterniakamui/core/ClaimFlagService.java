@@ -31,10 +31,10 @@ public class ClaimFlagService {
 
     private final EterniaKamui plugin;
 
-    private final Map<Integer, ItemStack> GUI_ITEMS_ENABLE = new HashMap<>();
-    private final Map<Integer, ItemStack> GUI_ITEMS_DISABLE = new HashMap<>();
     private final Map<Integer, BukkitTask> GUI_TASKS = new HashMap<>();
 
+    private final ItemStack[] GUI_ITEMS_ENABLE = new ItemStack[ClaimFlag.FLAGS_LENGTH];
+    private final ItemStack[] GUI_ITEMS_DISABLE = new ItemStack[ClaimFlag.FLAGS_LENGTH];
     private final ItemStack[] BASE_GUI = new ItemStack[9];
 
     private List<Component> loreEnable;
@@ -88,10 +88,10 @@ public class ClaimFlagService {
 
     public ItemStack getFlagItem(int flag, boolean enable) {
         if (enable) {
-            return GUI_ITEMS_ENABLE.get(flag);
+            return GUI_ITEMS_ENABLE[flag];
         }
 
-        return GUI_ITEMS_DISABLE.get(flag);
+        return GUI_ITEMS_DISABLE[flag];
     }
 
     protected void loadAllFlags() {
@@ -171,22 +171,17 @@ public class ClaimFlagService {
         ItemMeta meta = itemStack.getItemMeta();
 
         meta.displayName(plugin.parseColor(name));
-
-        if (enabled) {
-            meta.lore(loreEnable);
-            meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-        } else {
-            meta.lore(loreDisable);
-        }
+        meta.lore(enabled ? loreEnable : loreDisable);
+        meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 
         itemStack.setItemMeta(meta);
 
         if (enabled) {
-            GUI_ITEMS_ENABLE.put(position, itemStack);
+            GUI_ITEMS_ENABLE[position] = itemStack;
             return;
         }
 
-        GUI_ITEMS_DISABLE.put(position, itemStack);
+        GUI_ITEMS_DISABLE[position] = itemStack;
     }
 
 

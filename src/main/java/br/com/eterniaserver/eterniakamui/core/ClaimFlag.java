@@ -64,6 +64,7 @@ public class ClaimFlag {
         setExplosions(flags.charAt(EXPLOSIONS_INDEX) == '1');
         setLiquidFluid(flags.charAt(LIQUID_FLUID_INDEX) == '1');
         setKeepLevel(flags.charAt(KEEP_LEVEL_INDEX) == '1');
+        setLeaveDecay(flags.charAt(LEAVE_DECAY_INDEX) == '1');
     }
 
     public boolean getFlag(int index) {
@@ -81,6 +82,7 @@ public class ClaimFlag {
             case EXPLOSIONS_INDEX -> setExplosions(value);
             case LIQUID_FLUID_INDEX -> setLiquidFluid(value);
             case KEEP_LEVEL_INDEX -> setKeepLevel(value);
+            case LEAVE_DECAY_INDEX -> setLeaveDecay(value);
         }
     }
 
@@ -107,6 +109,11 @@ public class ClaimFlag {
     private void setKeepLevel(boolean keepLevel) {
         this.keepLevel = keepLevel;
         internalSetFlag(KEEP_LEVEL_INDEX, keepLevel);
+    }
+
+    private void setLeaveDecay(boolean leaveDecay) {
+        this.leaveDecay = leaveDecay;
+        internalSetFlag(LEAVE_DECAY_INDEX, leaveDecay);
     }
 
 }
