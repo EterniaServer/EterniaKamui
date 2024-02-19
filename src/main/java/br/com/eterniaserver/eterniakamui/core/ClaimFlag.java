@@ -18,7 +18,7 @@ import org.apache.commons.lang3.StringUtils;
 @Table(tableName = "%eternia_kamui_flags%")
 public class ClaimFlag {
 
-    public static final String GUI_NAME = "EterniaFlags<color:%s>";
+    public static final String GUI_NAME = "EterniaFlags";
 
     public static final int FLAGS_LENGTH = 6;
 
