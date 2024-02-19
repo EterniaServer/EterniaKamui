@@ -6,6 +6,7 @@ import br.com.eterniaserver.eterniakamui.enums.Strings;
 import br.com.eterniaserver.eterniakamui.core.ClaimFlag;
 
 import br.com.eterniaserver.eternialib.EterniaLib;
+
 import com.destroystokyo.paper.event.entity.PreCreatureSpawnEvent;
 
 import me.ryanhamshire.GriefPrevention.Claim;
@@ -15,12 +16,14 @@ import me.ryanhamshire.GriefPrevention.events.PreventPvPEvent;
 
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockExplodeEvent;
 import org.bukkit.event.block.BlockFromToEvent;
+import org.bukkit.event.block.LeavesDecayEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
@@ -126,14 +129,31 @@ public class ClaimHandler implements Listener {
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
+    public void onLeavesDecay(LeavesDecayEvent event) {
+        Optional<Claim> claim = claimFlagService.getClaimAt(event.getBlock().getLocation());
+        if (claim.isEmpty()) {
+            return;
+        }
+
+        Optional<ClaimFlag> claimFlag = claimFlagService.getClaimFlag(claim.get().getID().intValue());
+        if (claimFlag.isPresent() && !claimFlag.get().isLeaveDecay()) {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onCreaturePreSpawnEvent(PreCreatureSpawnEvent event) {
+        if (event.getType().getEntityClass() == null || !Monster.class.isAssignableFrom(event.getType().getEntityClass())) {
+            return;
+        }
+
         Optional<Claim> claim = claimFlagService.getClaimAt(event.getSpawnLocation());
         if (claim.isEmpty()) {
             return;
         }
 
         Optional<ClaimFlag> claimFlag = claimFlagService.getClaimFlag(claim.get().getID().intValue());
-        if (claimFlag.isPresent() && !claimFlag.get().isCreatureSpawn()) {
+        if (claimFlag.isPresent() && !claimFlag.get().isMonsterSpawn()) {
             event.setCancelled(true);
         }
     }

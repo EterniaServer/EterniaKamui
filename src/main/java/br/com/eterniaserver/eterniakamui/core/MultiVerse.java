@@ -18,8 +18,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
-@CommandAlias("mv|multiverse")
-@CommandPermission("eternia.world")
+@CommandAlias("%WORLDS")
+@CommandPermission("%WORLDS_PERM")
 public class MultiVerse extends BaseCommand {
 
     private final EterniaKamui plugin;
@@ -32,16 +32,16 @@ public class MultiVerse extends BaseCommand {
 
     @Default
     @HelpCommand
-    @Syntax("<página>")
-    @Description(" Mostra ajudas para os comandos de multiworld")
+    @Syntax("%WORLDS_SYNTAX")
+    @Description("%WORLDS_DESCRIPTION")
     public void help(CommandHelp help) {
         help.showHelp();
     }
 
-    @Subcommand("create")
-    @Syntax("<nome> <enviroment> <type> <invclear>(0 ou 1)")
-    @CommandCompletion("world_teste @worldenv @worldtyp 0")
-    @Description(" Crie e/ou carregue um mundo")
+    @Subcommand("%WORLDS_CREATE")
+    @Syntax("%WORLDS_CREATE_SYNTAX")
+    @CommandCompletion("world_teste @worldenv @worldtyp")
+    @Description("%WORLDS_CREATE_DESCRIPTION")
     public void onCreateWorld(Player player, String worldName, String worldEnviroment, String worldType, Integer invClear) {
         worldName = worldName.toLowerCase();
         worldEnviroment = worldEnviroment.toUpperCase();
@@ -56,10 +56,10 @@ public class MultiVerse extends BaseCommand {
         plugin.sendMiniMessages(player, Messages.WORLD_CREATED, worldName);
     }
 
-    @Subcommand("remove")
-    @Syntax("<nome>")
+    @Subcommand("%WORLDS_REMOVE")
+    @Syntax("%WORLDS_REMOVE_SYNTAX")
     @CommandCompletion("@worlds_custom")
-    @Description(" Remova um mundo")
+    @Description("%WORLDS_REMOVE_DESCRIPTION")
     public void onRemoveWorld(Player player, String worldName) {
         worldName = worldName.toLowerCase();
 
@@ -78,10 +78,10 @@ public class MultiVerse extends BaseCommand {
         plugin.sendMiniMessages(player, Messages.WORLD_DELETED, worldName);
     }
 
-    @Subcommand("teleport|tp")
-    @Syntax("<x> <y> <z> <nome>")
+    @Subcommand("%WORLDS_TP")
+    @Syntax("%WORLDS_TP_SYNTAX")
     @CommandCompletion("0 0 0 @worlds")
-    @Description(" Teleporta-se até um mundo")
+    @Description("%WORLDS_TP_DESCRIPTION")
     public void onTp(Player player, Double x, Double y, Double z, String worldName) {
         worldName = worldName.toLowerCase();
 

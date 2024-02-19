@@ -6,10 +6,11 @@ import br.com.eterniaserver.eterniakamui.EterniaKamui;
 import br.com.eterniaserver.eterniakamui.enums.Messages;
 import br.com.eterniaserver.eterniakamui.enums.Strings;
 
+import br.com.eterniaserver.eternialib.EterniaLib;
 import br.com.eterniaserver.eternialib.configuration.CommandLocale;
 import br.com.eterniaserver.eternialib.configuration.ReloadableConfiguration;
 import br.com.eterniaserver.eternialib.configuration.enums.ConfigurationCategory;
-import br.com.eterniaserver.eternialib.core.enums.Commands;
+import br.com.eterniaserver.eterniakamui.enums.Commands;
 
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -116,11 +117,12 @@ public class ConfigurationCfg implements ReloadableConfiguration {
         strings[Strings.CONS_SERVER_PREFIX.ordinal()] = inFile.getString("server.prefix", "<color:#555555>[<color:#34eb40>E<color:#3471eb>K<color:#555555>]<color:#AAAAAA> ");
         strings[Strings.CONS_FLAG_DISABLED.ordinal()] = inFile.getString("flags.lore.disabled", "<color:#FF5555>Desativado");
         strings[Strings.CONS_FLAG_ENABLED.ordinal()] = inFile.getString("flags.lore.enabled", "<color:#55FF55>Ativado");
-        strings[Strings.CONS_FLAG_MONSTER_SPAWN.ordinal()] = inFile.getString("flags.monster-spawn", "<color:#AAAAAA>Monster Spawn");
+        strings[Strings.CONS_FLAG_MONSTER_SPAWN.ordinal()] = inFile.getString("flags.monster-spawn", "<color:#AAAAAA>Spawn de Monstros");
         strings[Strings.CONS_FLAG_PVP.ordinal()] = inFile.getString("flags.pvp", "<color:#AAAAAA>PvP");
         strings[Strings.CONS_EXPLOSIONS.ordinal()] = inFile.getString("flags.explosions", "<color:#AAAAAA>Explosões");
-        strings[Strings.CONS_LIQUID_FLUID.ordinal()] = inFile.getString("flags.liquid-fluid", "<color:#AAAAAA>Fluir Líquidos");
-        strings[Strings.CONS_KEEP_LEVEL.ordinal()] = inFile.getString("flags.keep-level", "<color:#AAAAAA>Manter Nível");
+        strings[Strings.CONS_LIQUID_FLUID.ordinal()] = inFile.getString("flags.liquid-fluid", "<color:#AAAAAA>Fluir de líquidos");
+        strings[Strings.CONS_KEEP_LEVEL.ordinal()] = inFile.getString("flags.keep-level", "<color:#AAAAAA>Manter nível");
+        strings[Strings.CONS_LEAVE_DECAY.ordinal()] = inFile.getString("flags.leave-decay", "<color:#AAAAAA>Queda de folhas");
         strings[Strings.PERM_BYPASS.ordinal()] = inFile.getString("server.perm-bypass", "eterniakamui.bypass");
 
         outFile.set("sql.table-worlds", strings[Strings.TABLE_WORLDS.ordinal()]);
@@ -134,12 +136,79 @@ public class ConfigurationCfg implements ReloadableConfiguration {
         outFile.set("flags.explosions", strings[Strings.CONS_EXPLOSIONS.ordinal()]);
         outFile.set("flags.liquid-fluid", strings[Strings.CONS_LIQUID_FLUID.ordinal()]);
         outFile.set("flags.keep-level", strings[Strings.CONS_KEEP_LEVEL.ordinal()]);
+        outFile.set("flags.leave-decay", strings[Strings.CONS_LEAVE_DECAY.ordinal()]);
         outFile.set("server.perm-bypass", strings[Strings.PERM_BYPASS.ordinal()]);
     }
 
     @Override
     public void executeCritical() {
+        addCommandLocale(
+                Commands.FLAGS,
+                new CommandLocale(
+                        "flags",
+                        null,
+                        "Altere as flags de um terreno",
+                        "eternia.claim.user",
+                        null
+                )
+        );
+        addCommandLocale(
+                Commands.WORLDS,
+                new CommandLocale(
+                        "multiverse|mv",
+                        "<página>",
+                        "Comandos de mundos",
+                        "eternia.world",
+                        null
+                )
+        );
+        addCommandLocale(
+                Commands.WORLDS_CREATE,
+                new CommandLocale(
+                        "create",
+                        "<nome> <enviroment> <type>",
+                        " Crie e/ou carregue um mundo",
+                        null,
+                        null
+                )
+        );
+        addCommandLocale(
+                Commands.WORLDS_REMOVE,
+                new CommandLocale(
+                        "remove",
+                        "<nome>",
+                        " Remova um mundo",
+                        null,
+                        null
+                )
+        );
+        addCommandLocale(
+                Commands.WORLDS_TP,
+                new CommandLocale(
+                        "teleport|tp",
+                        "<x> <y> <z> <nome>",
+                        " Teleporta-se até um mundo",
+                        null,
+                        null
+                )
+        );
+
+        loadCommandsLocale();
+
         claimFlagService.loadAllFlags();
         customWorldService.loadAllCustomWorlds();
+    }
+
+    private void loadCommandsLocale() {
+        for (Commands command : Commands.values()) {
+            CommandLocale commandLocale = commandsLocale()[command.ordinal()];
+            EterniaLib.getCmdManager().getCommandReplacements().addReplacements(
+                    command.name().toLowerCase(), commandLocale.name(),
+                    command.name().toLowerCase() + "_DESCRIPTION", commandLocale.description(),
+                    command.name().toLowerCase() + "_PERM", commandLocale.perm(),
+                    command.name().toLowerCase() + "_SYNTAX", commandLocale.syntax(),
+                    command.name().toLowerCase() + "_ALIASES", commandLocale.aliases()
+            );
+        }
     }
 }

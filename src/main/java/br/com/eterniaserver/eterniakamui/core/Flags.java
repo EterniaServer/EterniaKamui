@@ -27,9 +27,9 @@ public class Flags extends BaseCommand {
         this.claimFlagService = claimFlagService;
     }
 
-    @CommandAlias("flags")
-    @CommandPermission("eternia.claim.user")
-    @Description(" Altere as flags do terreno")
+    @CommandAlias("%FLAGS")
+    @CommandPermission("%FLAGS_PERM")
+    @Description("%FLAGS_DESCRIPTION")
     public void onFlag(Player player) {
         Optional<Claim> claimOptional = claimFlagService.getClaimCachedAt(player);
         if (claimOptional.isEmpty()) {

@@ -126,8 +126,8 @@ public class ClaimFlagService {
         this.loreDisable = List.of(plugin.parseColor(plugin.getString(Strings.CONS_FLAG_DISABLED)));
 
         // Load the default Monster Spawn Tags
-        loadDefaultItens(Material.CARVED_PUMPKIN, ClaimFlag.CREATURE_SPAWN_INDEX, plugin.getString(Strings.CONS_FLAG_MONSTER_SPAWN), false);
-        loadDefaultItens(Material.CARVED_PUMPKIN, ClaimFlag.CREATURE_SPAWN_INDEX, plugin.getString(Strings.CONS_FLAG_MONSTER_SPAWN), true);
+        loadDefaultItens(Material.CARVED_PUMPKIN, ClaimFlag.MONSTER_SPAWN_INDEX, plugin.getString(Strings.CONS_FLAG_MONSTER_SPAWN), false);
+        loadDefaultItens(Material.CARVED_PUMPKIN, ClaimFlag.MONSTER_SPAWN_INDEX, plugin.getString(Strings.CONS_FLAG_MONSTER_SPAWN), true);
 
         // Load the default PvP Tags
         loadDefaultItens(Material.DIAMOND_SWORD, ClaimFlag.ALLOW_PVP_INDEX, plugin.getString(Strings.CONS_FLAG_PVP), false);
@@ -145,6 +145,10 @@ public class ClaimFlagService {
         loadDefaultItens(Material.EXPERIENCE_BOTTLE, ClaimFlag.KEEP_LEVEL_INDEX, plugin.getString(Strings.CONS_KEEP_LEVEL), false);
         loadDefaultItens(Material.EXPERIENCE_BOTTLE, ClaimFlag.KEEP_LEVEL_INDEX, plugin.getString(Strings.CONS_KEEP_LEVEL), true);
 
+        // Load the default Keep Level Tags
+        loadDefaultItens(Material.AZALEA_LEAVES, ClaimFlag.LEAVE_DECAY_INDEX, plugin.getString(Strings.CONS_LEAVE_DECAY), false);
+        loadDefaultItens(Material.AZALEA_LEAVES, ClaimFlag.LEAVE_DECAY_INDEX, plugin.getString(Strings.CONS_LEAVE_DECAY), true);
+
         loadBaseGui();
 
         EterniaServer.getGuiAPI().createGUI(ClaimFlag.GUI_NAME, BASE_GUI);
@@ -161,13 +165,15 @@ public class ClaimFlagService {
 
     private void loadDefaultItens(Material material, int position, String name, boolean enabled) {
         ItemStack itemStack = new ItemStack(material);
+
+        itemStack.addUnsafeEnchantment(Enchantment.LUCK, 1);
+
         ItemMeta meta = itemStack.getItemMeta();
 
         meta.displayName(plugin.parseColor(name));
 
         if (enabled) {
             meta.lore(loreEnable);
-            meta.addEnchant(Enchantment.LUCK, 1, true);
             meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         } else {
             meta.lore(loreDisable);

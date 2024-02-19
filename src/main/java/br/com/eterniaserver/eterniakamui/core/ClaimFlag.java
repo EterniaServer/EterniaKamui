@@ -18,15 +18,16 @@ import org.apache.commons.lang3.StringUtils;
 @Table(tableName = "%eternia_kamui_flags%")
 public class ClaimFlag {
 
-    public static final String GUI_NAME = "EterniaFlags";
+    public static final String GUI_NAME = "EterniaFlags<color:%s>";
 
-    public static final int FLAGS_LENGTH = 5;
+    public static final int FLAGS_LENGTH = 6;
 
-    public static final int CREATURE_SPAWN_INDEX = 0;
+    public static final int MONSTER_SPAWN_INDEX = 0;
     public static final int ALLOW_PVP_INDEX = 1;
     public static final int EXPLOSIONS_INDEX = 2;
     public static final int LIQUID_FLUID_INDEX = 3;
     public static final int KEEP_LEVEL_INDEX = 4;
+    public static final int LEAVE_DECAY_INDEX = 5;
 
     @Setter
     @PrimaryKeyField(columnName = "id", type = FieldType.INTEGER, autoIncrement = false)
@@ -40,24 +41,25 @@ public class ClaimFlag {
     }
 
     public ClaimFlag(Integer id) {
-        this("00110");
+        this("001111");
         this.id = id;
     }
 
-    private boolean creatureSpawn;
+    private boolean monsterSpawn;
     private boolean allowPvP;
     private boolean explosions;
     private boolean liquidFluid;
     private boolean keepLevel;
+    private boolean leaveDecay;
 
     public void setFlags(String flags) {
         if (flags.length() != FLAGS_LENGTH) {
-            flags = StringUtils.rightPad(flags, FLAGS_LENGTH, "0");
+            flags = StringUtils.rightPad(flags, FLAGS_LENGTH, "1");
         }
 
         this.flags = flags;
 
-        setCreatureSpawn(flags.charAt(CREATURE_SPAWN_INDEX) == '1');
+        setMonsterSpawn(flags.charAt(MONSTER_SPAWN_INDEX) == '1');
         setAllowPvP(flags.charAt(ALLOW_PVP_INDEX) == '1');
         setExplosions(flags.charAt(EXPLOSIONS_INDEX) == '1');
         setLiquidFluid(flags.charAt(LIQUID_FLUID_INDEX) == '1');
@@ -74,7 +76,7 @@ public class ClaimFlag {
 
     public void setFlag(int index, boolean value) {
         switch (index) {
-            case CREATURE_SPAWN_INDEX -> setCreatureSpawn(value);
+            case MONSTER_SPAWN_INDEX -> setMonsterSpawn(value);
             case ALLOW_PVP_INDEX -> setAllowPvP(value);
             case EXPLOSIONS_INDEX -> setExplosions(value);
             case LIQUID_FLUID_INDEX -> setLiquidFluid(value);
@@ -82,9 +84,9 @@ public class ClaimFlag {
         }
     }
 
-    private void setCreatureSpawn(boolean creatureSpawn) {
-        this.creatureSpawn = creatureSpawn;
-        internalSetFlag(CREATURE_SPAWN_INDEX, creatureSpawn);
+    private void setMonsterSpawn(boolean creatureSpawn) {
+        this.monsterSpawn = creatureSpawn;
+        internalSetFlag(MONSTER_SPAWN_INDEX, creatureSpawn);
     }
 
     private void setAllowPvP(boolean allowPvP) {
