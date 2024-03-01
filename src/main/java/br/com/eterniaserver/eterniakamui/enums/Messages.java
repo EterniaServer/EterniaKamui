@@ -2,6 +2,8 @@ package br.com.eterniaserver.eterniakamui.enums;
 
 public enum Messages {
 
+    CONS_SERVER_PREFIX,
+
     CLAIM_NOT_FOUND,
     WITHOUT_PERM,
 

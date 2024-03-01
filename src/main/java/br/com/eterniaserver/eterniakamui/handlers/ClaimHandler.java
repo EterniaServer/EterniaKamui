@@ -65,9 +65,7 @@ public class ClaimHandler implements Listener {
         Claim claim = event.getClaim();
         int claimId = claim.getID().intValue();
 
-        plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
-            EterniaLib.getDatabase().delete(ClaimFlag.class, claimId);
-        });
+        plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> EterniaLib.getDatabase().delete(ClaimFlag.class, claimId));
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)

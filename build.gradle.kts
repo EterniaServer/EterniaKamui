@@ -29,7 +29,7 @@ sonarqube  {
 }
 
 group = "br.com.eterniaserver"
-version = "4.0.0"
+version = "4.3.0"
 
 repositories {
     mavenCentral()
@@ -90,7 +90,7 @@ java {
 
 dependencies {
     compileOnly("io.papermc.paper", "paper-api", "1.20.4-R0.1-SNAPSHOT")
-    compileOnly("br.com.eterniaserver", "eternialib", "4.0.6")
+    compileOnly("br.com.eterniaserver", "eternialib", "4.3.0")
     compileOnly("br.com.eterniaserver", "eterniaserver", "4.0.10")
     compileOnly("com.github.TechFortress", "GriefPrevention", "16.18.1")
     compileOnly("maven.modrinth", "pl3xmap", "1.20.4-483")

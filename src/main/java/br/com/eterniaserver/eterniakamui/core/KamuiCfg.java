@@ -2,22 +2,23 @@ package br.com.eterniaserver.eterniakamui.core;
 
 import br.com.eterniaserver.eterniakamui.Constants;
 import br.com.eterniaserver.eterniakamui.EterniaKamui;
-
 import br.com.eterniaserver.eterniakamui.enums.Messages;
 import br.com.eterniaserver.eterniakamui.enums.Strings;
-
-import br.com.eterniaserver.eternialib.EterniaLib;
-import br.com.eterniaserver.eternialib.configuration.CommandLocale;
-import br.com.eterniaserver.eternialib.configuration.ReloadableConfiguration;
-import br.com.eterniaserver.eternialib.configuration.enums.ConfigurationCategory;
 import br.com.eterniaserver.eterniakamui.enums.Commands;
+
+import br.com.eterniaserver.eternialib.chat.MessageMap;
+import br.com.eterniaserver.eternialib.configuration.CommandLocale;
+import br.com.eterniaserver.eternialib.configuration.enums.ConfigurationCategory;
+import br.com.eterniaserver.eternialib.configuration.interfaces.CmdConfiguration;
+import br.com.eterniaserver.eternialib.configuration.interfaces.MsgConfiguration;
+import br.com.eterniaserver.eternialib.configuration.interfaces.ReloadableConfiguration;
 
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 
-public class ConfigurationCfg implements ReloadableConfiguration {
+public class KamuiCfg implements ReloadableConfiguration, CmdConfiguration<Commands>, MsgConfiguration<Messages> {
 
     private final EterniaKamui plugin;
     private final ClaimFlagService claimFlagService;
@@ -26,17 +27,15 @@ public class ConfigurationCfg implements ReloadableConfiguration {
     private final FileConfiguration inFile;
     private final FileConfiguration outFile;
 
-    private final CommandLocale[] commandsLocalesArray;
+    private final MessageMap<Messages, String> messages = new MessageMap<>(Messages.class, Messages.CONS_SERVER_PREFIX);
 
-    public ConfigurationCfg(EterniaKamui plugin, ClaimFlagService claimFlagService, CustomWorldService customWorldService) {
+    public KamuiCfg(EterniaKamui plugin, ClaimFlagService claimFlagService, CustomWorldService customWorldService) {
         this.plugin = plugin;
         this.claimFlagService = claimFlagService;
         this.customWorldService = customWorldService;
 
         this.inFile = YamlConfiguration.loadConfiguration(new File(getFilePath()));
         this.outFile = new YamlConfiguration();
-
-        this.commandsLocalesArray = new CommandLocale[Commands.values().length];
     }
 
     @Override
@@ -47,16 +46,6 @@ public class ConfigurationCfg implements ReloadableConfiguration {
     @Override
     public FileConfiguration outFileConfiguration() {
         return outFile;
-    }
-
-    @Override
-    public String[] messages() {
-        return plugin.messages();
-    }
-
-    @Override
-    public CommandLocale[] commandsLocale() {
-        return commandsLocalesArray;
     }
 
     @Override
@@ -76,6 +65,10 @@ public class ConfigurationCfg implements ReloadableConfiguration {
 
     @Override
     public void executeConfig() {
+        addMessage(
+                Messages.CONS_SERVER_PREFIX,
+                "#555555[#34eb40E#3471ebK#555555]#AAAAAA "
+        );
         addMessage(
                 Messages.CLAIM_NOT_FOUND,
                 "Não foi possível encontrar nenhuma proteção nessa localizaçao<color:#555555>."
@@ -114,7 +107,6 @@ public class ConfigurationCfg implements ReloadableConfiguration {
         strings[Strings.TABLE_WORLDS.ordinal()] = inFile.getString("sql.table-worlds", "e_kamui_worlds");
         strings[Strings.TABLE_FLAGS.ordinal()] = inFile.getString("sql.table-flags", "e_kamui_claim_flags");
         strings[Strings.PROTECTED_WORLDS.ordinal()] = inFile.getString("server.protected-worlds", "world,world_builder");
-        strings[Strings.CONS_SERVER_PREFIX.ordinal()] = inFile.getString("server.prefix", "<color:#555555>[<color:#34eb40>E<color:#3471eb>K<color:#555555>]<color:#AAAAAA> ");
         strings[Strings.CONS_FLAG_DISABLED.ordinal()] = inFile.getString("flags.lore.disabled", "<color:#FF5555>Desativado");
         strings[Strings.CONS_FLAG_ENABLED.ordinal()] = inFile.getString("flags.lore.enabled", "<color:#55FF55>Ativado");
         strings[Strings.CONS_FLAG_MONSTER_SPAWN.ordinal()] = inFile.getString("flags.monster-spawn", "<color:#AAAAAA>Spawn de Monstros");
@@ -127,7 +119,6 @@ public class ConfigurationCfg implements ReloadableConfiguration {
 
         outFile.set("sql.table-worlds", strings[Strings.TABLE_WORLDS.ordinal()]);
         outFile.set("sql.table-flags", strings[Strings.TABLE_FLAGS.ordinal()]);
-        outFile.set("server.prefix", strings[Strings.CONS_SERVER_PREFIX.ordinal()]);
         outFile.set("server.protected-worlds", strings[Strings.PROTECTED_WORLDS.ordinal()]);
         outFile.set("flags.lore.disabled", strings[Strings.CONS_FLAG_DISABLED.ordinal()]);
         outFile.set("flags.lore.enabled", strings[Strings.CONS_FLAG_ENABLED.ordinal()]);
@@ -193,22 +184,12 @@ public class ConfigurationCfg implements ReloadableConfiguration {
                 )
         );
 
-        loadCommandsLocale();
-
         claimFlagService.loadAllFlags();
         customWorldService.loadAllCustomWorlds();
     }
 
-    private void loadCommandsLocale() {
-        for (Commands command : Commands.values()) {
-            CommandLocale commandLocale = commandsLocale()[command.ordinal()];
-            EterniaLib.getCmdManager().getCommandReplacements().addReplacements(
-                    command.name().toLowerCase(), commandLocale.name(),
-                    command.name().toLowerCase() + "_DESCRIPTION", commandLocale.description(),
-                    command.name().toLowerCase() + "_PERM", commandLocale.perm(),
-                    command.name().toLowerCase() + "_SYNTAX", commandLocale.syntax(),
-                    command.name().toLowerCase() + "_ALIASES", commandLocale.aliases()
-            );
-        }
+    @Override
+    public MessageMap<Messages, String> messages() {
+        return messages;
     }
 }

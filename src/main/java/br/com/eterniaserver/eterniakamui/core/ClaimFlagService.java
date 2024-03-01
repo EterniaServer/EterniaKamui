@@ -100,11 +100,11 @@ public class ClaimFlagService {
         try {
             Entity<ClaimFlag> claimFlagEntity = new Entity<>(ClaimFlag.class);
 
-            EterniaLib.addTableName("%eternia_kamui_flags%", plugin.getString(Strings.TABLE_FLAGS));
+            EterniaLib.getDatabase().addTableName("%eternia_kamui_flags%", plugin.getString(Strings.TABLE_FLAGS));
 
             EterniaLib.getDatabase().register(ClaimFlag.class, claimFlagEntity);
         } catch (Exception exception) {
-            EterniaLib.registerLog("EE-642-ClaimFlag");
+            plugin.getLogger().severe("EterniaKamui: Error loading ClaimFlags" + exception.getMessage());
             return;
         }
 
@@ -122,8 +122,8 @@ public class ClaimFlagService {
     }
 
     private void createCashGui() {
-        this.loreEnable = List.of(plugin.parseColor(plugin.getString(Strings.CONS_FLAG_ENABLED)));
-        this.loreDisable = List.of(plugin.parseColor(plugin.getString(Strings.CONS_FLAG_DISABLED)));
+        this.loreEnable = List.of(EterniaLib.getChatCommons().parseColor(plugin.getString(Strings.CONS_FLAG_ENABLED)));
+        this.loreDisable = List.of(EterniaLib.getChatCommons().parseColor(plugin.getString(Strings.CONS_FLAG_DISABLED)));
 
         // Load the default Monster Spawn Tags
         loadDefaultItens(Material.CARVED_PUMPKIN, ClaimFlag.MONSTER_SPAWN_INDEX, plugin.getString(Strings.CONS_FLAG_MONSTER_SPAWN), false);
@@ -158,7 +158,7 @@ public class ClaimFlagService {
         for (int i = 0; i < 9; i++) {
             BASE_GUI[i] = new ItemStack(Material.BLACK_STAINED_GLASS_PANE);
             ItemMeta meta = BASE_GUI[i].getItemMeta();
-            meta.displayName(plugin.parseColor("<color:#aaaaaa>EK Flags"));
+            meta.displayName(EterniaLib.getChatCommons().parseColor("<color:#aaaaaa>EK Flags"));
             BASE_GUI[i].setItemMeta(meta);
         }
     }
@@ -170,7 +170,7 @@ public class ClaimFlagService {
 
         ItemMeta meta = itemStack.getItemMeta();
 
-        meta.displayName(plugin.parseColor(name));
+        meta.displayName(EterniaLib.getChatCommons().parseColor(name));
         meta.lore(enabled ? loreEnable : loreDisable);
         meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 

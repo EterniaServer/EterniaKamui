@@ -11,9 +11,10 @@ import br.com.eterniaserver.acf.annotation.HelpCommand;
 import br.com.eterniaserver.acf.annotation.Subcommand;
 import br.com.eterniaserver.acf.annotation.Syntax;
 
-import br.com.eterniaserver.eterniakamui.EterniaKamui;
 import br.com.eterniaserver.eterniakamui.enums.Messages;
 
+import br.com.eterniaserver.eternialib.EterniaLib;
+import br.com.eterniaserver.eternialib.chat.MessageOptions;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -22,11 +23,9 @@ import org.bukkit.entity.Player;
 @CommandPermission("%WORLDS_PERM")
 public class MultiVerse extends BaseCommand {
 
-    private final EterniaKamui plugin;
     private final CustomWorldService customWorldService;
 
-    public MultiVerse(EterniaKamui plugin, CustomWorldService customWorldService) {
-        this.plugin = plugin;
+    public MultiVerse(CustomWorldService customWorldService) {
         this.customWorldService = customWorldService;
     }
 
@@ -48,12 +47,14 @@ public class MultiVerse extends BaseCommand {
         worldType = worldType.toUpperCase();
 
         if (customWorldService.containsWorld(worldName)) {
-            plugin.sendMiniMessages(player, Messages.WORLD_EXISTS, worldName);
+            MessageOptions options = new MessageOptions(worldName);
+            EterniaLib.getChatCommons().sendMessage(player, Messages.WORLD_EXISTS, options);
         }
 
         customWorldService.createWorld(worldName, worldEnviroment, worldType);
 
-        plugin.sendMiniMessages(player, Messages.WORLD_CREATED, worldName);
+        MessageOptions options = new MessageOptions(worldName);
+        EterniaLib.getChatCommons().sendMessage(player, Messages.WORLD_CREATED, options);
     }
 
     @Subcommand("%WORLDS_REMOVE")
@@ -64,18 +65,20 @@ public class MultiVerse extends BaseCommand {
         worldName = worldName.toLowerCase();
 
         if (customWorldService.containsBaseWorld(worldName)) {
-            plugin.sendMiniMessages(player, Messages.WORLD_BASE);
+            EterniaLib.getChatCommons().sendMessage(player, Messages.WORLD_BASE);
             return;
         }
 
         if (!customWorldService.containsCustomWorld(worldName)) {
-            plugin.sendMiniMessages(player, Messages.WORLD_NOT_FOUND, worldName);
+            MessageOptions options = new MessageOptions(worldName);
+            EterniaLib.getChatCommons().sendMessage(player, Messages.WORLD_NOT_FOUND, options);
             return;
         }
 
         customWorldService.removeWorld(worldName);
 
-        plugin.sendMiniMessages(player, Messages.WORLD_DELETED, worldName);
+        MessageOptions options = new MessageOptions(worldName);
+        EterniaLib.getChatCommons().sendMessage(player, Messages.WORLD_DELETED, options);
     }
 
     @Subcommand("%WORLDS_TP")
@@ -86,7 +89,8 @@ public class MultiVerse extends BaseCommand {
         worldName = worldName.toLowerCase();
 
         if (!customWorldService.containsWorld(worldName)) {
-            plugin.sendMiniMessages(player, Messages.WORLD_NOT_FOUND, worldName);
+            MessageOptions options = new MessageOptions(worldName);
+            EterniaLib.getChatCommons().sendMessage(player, Messages.WORLD_NOT_FOUND, options);
             return;
         }
 

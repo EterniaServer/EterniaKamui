@@ -1,13 +1,14 @@
 package br.com.eterniaserver.eterniakamui;
 
 import br.com.eterniaserver.eterniakamui.core.ClaimFlagService;
-import br.com.eterniaserver.eterniakamui.core.ConfigurationCfg;
+import br.com.eterniaserver.eterniakamui.core.KamuiCfg;
 import br.com.eterniaserver.eterniakamui.core.CustomWorldService;
 import br.com.eterniaserver.eterniakamui.core.Flags;
 import br.com.eterniaserver.eterniakamui.core.MultiVerse;
 import br.com.eterniaserver.eterniakamui.handlers.ClaimHandler;
 import br.com.eterniaserver.eterniakamui.handlers.Pl3xMapHandler;
 import br.com.eterniaserver.eternialib.EterniaLib;
+
 import net.pl3x.map.core.Pl3xMap;
 
 public class Manager {
@@ -23,20 +24,15 @@ public class Manager {
         ClaimFlagService claimFlagService = new ClaimFlagService(plugin);
         CustomWorldService customWorldService = new CustomWorldService(plugin);
 
-        ConfigurationCfg configuration = new ConfigurationCfg(plugin, claimFlagService, customWorldService);
+        KamuiCfg configuration = new KamuiCfg(plugin, claimFlagService, customWorldService);
 
-        EterniaLib.registerConfiguration("eterniakamui", "core", configuration);
-
-        configuration.executeConfig();
-        configuration.executeCritical();
-
-        configuration.saveConfiguration(true);
+        EterniaLib.getCfgManager().registerConfiguration("eterniakamui", "core", true, configuration);
 
         EterniaLib.getCmdManager().getCommandCompletions().registerStaticCompletion("worldenv", customWorldService.environments());
         EterniaLib.getCmdManager().getCommandCompletions().registerStaticCompletion("worldtyp", customWorldService.types());
         EterniaLib.getCmdManager().getCommandCompletions().registerStaticCompletion("worlds_custom", customWorldService.worldNames());
 
-        EterniaLib.getCmdManager().registerCommand(new MultiVerse(plugin, customWorldService));
+        EterniaLib.getCmdManager().registerCommand(new MultiVerse(customWorldService));
         EterniaLib.getCmdManager().registerCommand(new Flags(plugin, claimFlagService));
 
         plugin.getServer().getPluginManager().registerEvents(new ClaimHandler(plugin, claimFlagService), plugin);

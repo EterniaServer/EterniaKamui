@@ -33,13 +33,13 @@ public class Flags extends BaseCommand {
     public void onFlag(Player player) {
         Optional<Claim> claimOptional = claimFlagService.getClaimCachedAt(player);
         if (claimOptional.isEmpty()) {
-            plugin.sendMiniMessages(player, Messages.CLAIM_NOT_FOUND);
+            EterniaLib.getChatCommons().sendMessage(player, Messages.CLAIM_NOT_FOUND);
             return;
         }
 
         Claim claim = claimOptional.get();
         if (!player.hasPermission(plugin.getString(Strings.PERM_BYPASS)) && !claim.ownerID.equals(player.getUniqueId()) && claim.hasExplicitPermission(player, ClaimPermission.Manage)) {
-            plugin.sendMiniMessages(player, Messages.WITHOUT_PERM);
+            EterniaLib.getChatCommons().sendMessage(player, Messages.WITHOUT_PERM);
             return;
         }
 

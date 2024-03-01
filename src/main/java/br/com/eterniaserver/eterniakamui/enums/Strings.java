@@ -15,6 +15,5 @@ public enum Strings {
     CONS_LIQUID_FLUID,
     CONS_KEEP_LEVEL,
     CONS_LEAVE_DECAY,
-    CONS_SERVER_PREFIX
 
 }

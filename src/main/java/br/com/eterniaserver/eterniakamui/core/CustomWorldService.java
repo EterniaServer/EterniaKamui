@@ -106,11 +106,11 @@ public class CustomWorldService {
         try {
             Entity<CustomWorld> customWorldEntity = new Entity<>(CustomWorld.class);
 
-            EterniaLib.addTableName("%eternia_kamui_worlds%", plugin.getString(Strings.TABLE_WORLDS));
+            EterniaLib.getDatabase().addTableName("%eternia_kamui_worlds%", plugin.getString(Strings.TABLE_WORLDS));
 
             EterniaLib.getDatabase().register(CustomWorld.class, customWorldEntity);
         } catch (Exception exception) {
-            EterniaLib.registerLog("EE-643-CustomWorld");
+            plugin.getLogger().severe("EterniaKamui: Error loading CustomWorlds" + exception.getMessage());
             return;
         }
 

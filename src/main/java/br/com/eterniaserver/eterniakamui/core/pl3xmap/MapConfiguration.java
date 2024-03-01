@@ -1,6 +1,7 @@
 package br.com.eterniaserver.eterniakamui.core.pl3xmap;
 
 import br.com.eterniaserver.eterniakamui.EterniaKamui;
+
 import net.pl3x.map.core.configuration.AbstractConfig;
 
 import java.nio.file.Path;
